@@ -7,7 +7,7 @@ Predicts whether a loan application is approved or rejected using **Decision Tre
 - Data cleaning: missing values filled with mode (text) / median (numeric)
 - Label encoding of categorical features
 - 80/20 stratified train-test split
-- Two models compared: Decision Tree (depth 4) and Random Forest (100 trees, depth 5)
+- Two models compared: Decision Tree (depth 4) and Random Forest (500 trees, depth 5)
 - Accuracy, classification reports, confusion matrices, feature importance
 - Interactive web app with a live prediction form
 
@@ -18,7 +18,7 @@ Predicts whether a loan application is approved or rejected using **Decision Tre
 | Decision Tree | 84.55% |
 | Random Forest | 85.37% |
 
-Top features (Random Forest importance): **Credit_History** (48.9%), **LoanAmount** (12.6%), **ApplicantIncome** (12.3%).
+Top features (Random Forest importance): **Credit_History** (49.0%), **ApplicantIncome** (12.6%), **LoanAmount** (11.7%).
 
 ## Files
 

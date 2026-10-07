@@ -69,9 +69,9 @@ dt_pred = dt_model.predict(X_test)
 dt_acc = accuracy_score(y_test, dt_pred)
 
 # ---------------------------------------------------------
-# STEP 7: Train the Random Forest (100 trees voting together)
+# STEP 7: Train the Random Forest (500 trees voting together)
 # ---------------------------------------------------------
-rf_model = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
+rf_model = RandomForestClassifier(n_estimators=500, max_depth=5, random_state=42)
 rf_model.fit(X_train, y_train)
 rf_pred = rf_model.predict(X_test)
 rf_acc = accuracy_score(y_test, rf_pred)

@@ -43,7 +43,7 @@ def train_models(df):
     )
     dt = DecisionTreeClassifier(max_depth=4, random_state=42)
     dt.fit(X_train, y_train)
-    rf = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
+    rf = RandomForestClassifier(n_estimators=500, max_depth=5, random_state=42)
     rf.fit(X_train, y_train)
     return encoders, X, y_test, X_test, dt, rf
 
@@ -102,6 +102,20 @@ model = rf_model if model_choice == "Random Forest" else dt_model
 pred = int(model.predict(sample)[0])
 proba = model.predict_proba(sample)[0]
 
+DISPLAY_NAMES = {
+    "Gender": "Gender",
+    "Married": "Married",
+    "Dependents": "Dependents",
+    "Education": "Education",
+    "Self_Employed": "Self Employed",
+    "ApplicantIncome": "Applicant Income",
+    "CoapplicantIncome": "Coapplicant Income",
+    "LoanAmount": "Loan Amount",
+    "Loan_Amount_Term": "Loan Term",
+    "Credit_History": "Credit History",
+    "Property_Area": "Property Area",
+}
+
 # ---------------------------------------------------------
 # Tabs
 # ---------------------------------------------------------
@@ -115,6 +129,36 @@ with tab_predict:
         st.success(f"Loan APPROVED  (approval probability: {proba[1] * 100:.1f}%)")
     else:
         st.error(f"Loan REJECTED  (rejection probability: {proba[0] * 100:.1f}%)")
+
+    st.subheader("Prediction Summary")
+    st.dataframe(pd.DataFrame({
+        "Metric": ["Model", "Approval Probability", "Rejection Probability", "Prediction"],
+        "Value": [
+            model_choice,
+            f"{proba[1] * 100:.1f}%",
+            f"{proba[0] * 100:.1f}%",
+            "APPROVED" if pred == 1 else "REJECTED",
+        ],
+    }), hide_index=True, width="stretch")
+
+    st.subheader("Key factors considered")
+    st.caption(f"Feature importance from the {model_choice} model - higher bar = more influence on this prediction")
+    importance = pd.Series(model.feature_importances_, index=X.columns).sort_values(ascending=False)
+    top_imp = importance.iloc[0]
+    lines = []
+    for feature, imp in importance.head(5).items():
+        name = DISPLAY_NAMES.get(feature, feature)
+        bar_len = max(1, round(imp / top_imp * 30))
+        bar = "█" * bar_len
+        if imp >= 0.5 * top_imp:
+            level = "High"
+        elif imp >= 0.2 * top_imp:
+            level = "Medium"
+        else:
+            level = "Lower"
+        lines.append(f"{name:<18} {bar:<32} {imp * 100:5.1f}%  {level}")
+    st.code("\n".join(lines))
+
     st.write(f"Model used: **{model_choice}**")
     st.dataframe(sample.T.rename(columns={0: "Encoded value"}))
 
